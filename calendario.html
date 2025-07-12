@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Eventos</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .calendar-container {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .navigation-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .today-btn, .nav-btn {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .month-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            flex-grow: 1;
+        }
+        
+        .view-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .view-btn {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .view-btn.active {
+            background-color: #7986cb;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: auto repeat(6, 1fr);
+            flex-grow: 1;
+            height: 100%;
+            border: 1px solid #ddd;
+            overflow: hidden;
+        }
+        
+        .calendar.week-view {
+            grid-template-columns: 100px repeat(7, 1fr);
+            grid-template-rows: auto repeat(24, 1fr);
+        }
+        
+        .calendar.day-view {
+            grid-template-columns: 100px 1fr;
+            grid-template-rows: auto repeat(24, 1fr);
+        }
+        
+        .calendar.list-view {
+            display: block;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .calendar-header {
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        
+        .day-cell {
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 5px;
+            position: relative;
+            overflow-y: auto;
+            height: 100%;
+        }
+        
+        .time-slot {
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 5px;
+            position: relative;
+            min-height: 60px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .time-label {
+            background-color: #f9f9f9;
+            border-right: 1px solid #ddd;
+            padding: 10px 5px;
+            font-size: 12px;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .week-day-header {
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .day-header-date {
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .list-view-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .list-date-group {
+            margin-bottom: 30px;
+        }
+        
+        .list-date-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .list-event-item {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .list-event-item:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .list-event-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .list-event-content {
+            flex-grow: 1;
+        }
+        
+        .list-event-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .list-event-time {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .week-event, .day-event {
+            position: absolute;
+            left: 2px;
+            right: 2px;
+            background-color: #3f51b5;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .time-slot {
+            position: relative;
+        }
+        
+        .all-day-slot {
+            background-color: #f0f0f0;
+            min-height: 40px;
+        }
+        
+        .week-event {
+            position: relative;
+            margin-bottom: 2px;
+        }
+        
+        .empty-time-slot {
+            background-color: #fafafa;
+        }
+        
+        .current-time-slot {
+            background-color: #e3f2fd;
+        }
+        
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2px;
+        }
+        
+        .other-month {
+            background-color: #f5f5f5;
+            color: #aaa;
+        }
+        
+        .today {
+            background-color: #e3f2fd;
+        }
+        
+        .selected-day {
+            outline: 2px solid #3f51b5;
+        }
+        
+        .event {
+            margin-bottom: 5px;
+            padding: 4px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            color: white;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .side-panel {
+            width: 300px;
+            padding: 15px;
+            border-left: 1px solid #ddd;
+            background-color: #f9f9f9;
+            overflow-y: auto;
+        }
+        
+        .side-panel h3 {
+            margin-bottom: 15px;
+        }
+        
+        .panel-section {
+            margin-bottom: 20px;
+        }
+        
+        .panel-section h4 {
+            margin-bottom: 10px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        select[multiple] {
+            height: auto;
+            min-height: 100px;
+        }
+        
+        select[multiple] option {
+            padding: 5px;
+            margin: 2px 0;
+        }
+        
+        select[multiple] option:checked {
+            background-color: #3f51b5;
+            color: white;
+        }
+        
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #3f51b5;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .event-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .form-buttons button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background-color: #3f51b5;
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .reset-btn {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .color-option.selected {
+            border-color: #000;
+        }
+
+        /* Colores predefinidos para eventos */
+        .event-color-1 { background-color: #4CAF50; }
+        .event-color-2 { background-color: #2196F3; }
+        .event-color-3 { background-color: #f44336; }
+        .event-color-4 { background-color: #FF9800; }
+        .event-color-5 { background-color: #9C27B0; }
+        .event-color-6 { background-color: #795548; }
+        .event-color-7 { background-color: #607D8B; }
+        .event-color-8 { background-color: #E91E63; }
+        
+        .form-field {
+            margin-bottom: 15px;
+        }
+        
+        .form-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .extended-form-section {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        /* Estilos para que se vea exactamente como en la imagen */
+        .color-input {
+            height: 36px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="top-controls">
+            <div class="navigation-controls">
+                <button id="today-btn" class="today-btn">Today</button>
+                <button id="prev-btn" class="nav-btn">&lt;</button>
+                <button id="next-btn" class="nav-btn">&gt;</button>
+            </div>
+            <div class="month-title" id="month-title">julio de 2025</div>
+            <div class="view-controls">
+                <button class="view-btn active" data-view="month">Month</button>
+                <button class="view-btn" data-view="week">Week</button>
+                <button class="view-btn" data-view="day">Day</button>
+                <button class="view-btn" data-view="list">List</button>
+            </div>
+        </div>
+        
+        <div class="calendar" id="calendar">
+            <!-- Cabeceras de día de la semana -->
+            <div class="calendar-header">dom</div>
+            <div class="calendar-header">lun</div>
+            <div class="calendar-header">mar</div>
+            <div class="calendar-header">mié</div>
+            <div class="calendar-header">jue</div>
+            <div class="calendar-header">vie</div>
+            <div class="calendar-header">sáb</div>
+            
+            <!-- Las celdas de días se generarán dinámicamente con JavaScript -->
+        </div>
+    </div>
+    
+    <div class="side-panel">
+        <div class="panel-section">
+            <h3>Selected Date</h3>
+            <div id="selected-date">11th Jul 2025</div>
+        </div>
+        
+        <div class="panel-section">
+            <h3>Selected Event</h3>
+            <div id="selected-event-details">
+                <div class="form-field">
+                    <label>Id</label>
+                    <input type="number" id="event-id" placeholder="Event ID">
+                </div>
+                
+                <div class="form-field">
+                    <label>Resource Ids</label>
+                    <select id="resource-ids" multiple size="4">
+                        <option value="color-1">🟢 Verde</option>
+                        <option value="color-2">🔵 Azul</option>
+                        <option value="color-3">🔴 Rojo</option>
+                        <option value="color-4">🟠 Naranja</option>
+                        <option value="color-5">🟣 Púrpura</option>
+                        <option value="color-6">🟤 Marrón</option>
+                        <option value="color-7">⚫ Azul Gris</option>
+                        <option value="color-8">🩷 Rosa</option>
+                    </select>
+                </div>
+                
+                <div class="toggle-container">
+                    <span>All</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="all-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="toggle-container">
+                    <span>Day</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="day-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="form-field">
+                    <label>Start</label>
+                    <input type="date" id="event-start">
+                </div>
+                
+                <div class="toggle-container">
+                    <span>Start Editable</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="start-editable-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="form-field">
+                    <label>End</label>
+                    <input type="date" id="event-end">
+                </div>
+                
+                <div class="toggle-container">
+                    <span>Duration Editable</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="duration-editable-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="form-field">
+                    <label>Display</label>
+                    <input type="text" id="event-display">
+                </div>
+                
+                <div class="form-field">
+                    <label>Extended Props</label>
+                    <input type="text" id="event-extended-props">
+                </div>
+                
+                <div class="form-field">
+                    <label>Background Color</label>
+                    <input type="text" id="event-background-color" class="color-input">
+                </div>
+                
+                <div class="form-field">
+                    <label>Text Color</label>
+                    <input type="text" id="event-text-color" class="color-input">
+                </div>
+                
+                <div class="form-field">
+                    <label>Title</label>
+                    <input type="text" id="event-title" placeholder="Event title">
+                </div>
+                
+                <div class="form-field">
+                    <label>Title HTML</label>
+                    <textarea id="event-title-html" rows="3"></textarea>
+                </div>
+                
+                <div class="toggle-container">
+                    <span>Editable</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editable-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="form-buttons">
+                    <button id="reset-event-btn" class="reset-btn">Reset</button>
+                    <button id="submit-event-btn" class="save-btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para añadir evento -->
+    <div class="overlay" id="overlay"></div>
+    <div class="event-form" id="event-form">
+        <h3>Añadir evento</h3>
+        <div class="form-field">
+            <label>Título</label>
+            <input type="text" id="new-event-title" placeholder="Título del evento">
+        </div>
+        
+        <div class="form-field">
+            <label>Hora</label>
+            <input type="time" id="new-event-time">
+        </div>
+        
+        <div class="form-field">
+            <label>Color</label>
+            <div class="color-picker">
+                <div class="color-option event-color-1 selected" data-color="1"></div>
+                <div class="color-option event-color-2" data-color="2"></div>
+                <div class="color-option event-color-3" data-color="3"></div>
+                <div class="color-option event-color-4" data-color="4"></div>
+                <div class="color-option event-color-5" data-color="5"></div>
+                <div class="color-option event-color-6" data-color="6"></div>
+                <div class="color-option event-color-7" data-color="7"></div>
+                <div class="color-option event-color-8" data-color="8"></div>
+            </div>
+        </div>
+        
+        <div class="extended-form-section">
+            <div class="section-title">Opciones avanzadas</div>
+            
+            <div class="toggle-container">
+                <span>Start Editable</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="new-start-editable">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <div class="toggle-container">
+                <span>Duration Editable</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="new-duration-editable">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <div class="form-field">
+                <label>Display</label>
+                <input type="text" id="new-event-display">
+            </div>
+            
+            <div class="form-field">
+                <label>Extended Props</label>
+                <input type="text" id="new-event-extended-props">
+            </div>
+            
+            <div class="form-field">
+                <label>Background Color</label>
+                <input type="text" id="new-event-background-color" placeholder="#FFFFFF">
+            </div>
+            
+            <div class="form-field">
+                <label>Text Color</label>
+                <input type="text" id="new-event-text-color" placeholder="#000000">
+            </div>
+        </div>
+        
+        <div class="form-buttons">
+            <button class="cancel-btn" id="cancel-event">Cancelar</button>
+            <button class="save-btn" id="save-event">Guardar</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentDate = new Date('2025-07-11'); // Fecha de la imagen
+        let selectedDate = new Date('2025-07-11');
+        let selectedEvent = null;
+        let selectedColorOption = '1';
+        let nextEventId = 1;
+        let currentView = 'month'; // month, week, day, list
+        
+        // Eventos precargados según la imagen
+        let events = {
+            '2025-07-06': [
+                { id: 1, title: 'Project Kickoff', time: '', color: '6', backgroundColor: '#795548', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-07': [
+                { id: 2, title: 'Team Collaboration', time: '', color: '4', backgroundColor: '#FF9800', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-08': [
+                { id: 3, title: 'Client Presentation', time: '10:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-09': [
+                { id: 4, title: 'Strategic Planning', time: '7:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-10': [
+                { id: 5, title: 'Product Development', time: '', color: '2', backgroundColor: '#2196F3', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-11': [
+                { id: 6, title: 'Training Session', time: '10:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-13': [
+                { id: 7, title: 'Quarterly Review', time: '16:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-14': [
+                { id: 8, title: 'Innovation Workshop', time: '10:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-15': [
+                { id: 9, title: 'Marketing Strategy', time: '7:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-16': [
+                { id: 10, title: 'Budget Planning', time: '6:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-17': [
+                { id: 11, title: 'Performance Evaluation', time: '', color: '6', backgroundColor: '#795548', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-18': [
+                { id: 12, title: '9:00 p.m. Business Development', time: '9:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-19': [
+                { id: 13, title: '9:00 p.m. Customer Feedback', time: '9:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-20': [
+                { id: 14, title: '10:00 p.m. Quality Assurance', time: '10:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-21': [
+                { id: 15, title: '6:00 p.m. Sales Pitch', time: '6:00', color: '2', backgroundColor: '#2196F3', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-22': [
+                { id: 16, title: '4:00 p.m. Leadership Training', time: '4:00', color: '5', backgroundColor: '#9C27B0', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-23': [
+                { id: 17, title: '3:00 p.m. Market Research', time: '3:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-24': [
+                { id: 18, title: '8:00 p.m. Cross-functional Meeting', time: '8:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-25': [
+                { id: 19, title: '7:00 p.m. Employee Recognition', time: '7:00', color: '4', backgroundColor: '#FF9800', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ],
+            '2025-07-26': [
+                { id: 20, title: 'Stakeholder Consultation', time: '', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+            ]
+        };
+        
+        // Calcular el siguiente ID disponible
+        function calculateNextEventId() {
+            let maxId = 0;
+            
+            // Revisar todos los eventos en todas las fechas
+            for (const dateStr in events) {
+                if (events.hasOwnProperty(dateStr)) {
+                    for (const event of events[dateStr]) {
+                        if (event.id > maxId) {
+                            maxId = event.id;
+                        }
+                    }
+                }
+            }
+            
+            return maxId + 1;
+        }
+
+        // Inicializar el calendario
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calcular el siguiente ID disponible
+            nextEventId = calculateNextEventId();
+            
+            renderCalendar();
+            updateSidePanel();
+            
+            // Eventos para navegar entre meses
+            document.getElementById('prev-btn').addEventListener('click', function() {
+                if (currentView === 'month') {
+                    currentDate.setMonth(currentDate.getMonth() - 1);
+                } else if (currentView === 'week') {
+                    currentDate.setDate(currentDate.getDate() - 7);
+                } else if (currentView === 'day') {
+                    currentDate.setDate(currentDate.getDate() - 1);
+                }
+                renderCalendar();
+            });
+            
+            document.getElementById('next-btn').addEventListener('click', function() {
+                if (currentView === 'month') {
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                } else if (currentView === 'week') {
+                    currentDate.setDate(currentDate.getDate() + 7);
+                } else if (currentView === 'day') {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                renderCalendar();
+            });
+            
+            // Botón de hoy
+            document.getElementById('today-btn').addEventListener('click', function() {
+                currentDate = new Date('2025-07-11'); // Usar la fecha de la imagen como "hoy"
+                selectedDate = new Date('2025-07-11');
+                renderCalendar();
+                updateSidePanel();
+            });
+            
+            // Cambiar de vista
+            document.querySelectorAll('.view-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.view-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    currentView = this.getAttribute('data-view');
+                    renderCalendar();
+                });
+            });
+            
+            // Configuración de eventos para el formulario de eventos
+            document.getElementById('save-event').addEventListener('click', saveEvent);
+            document.getElementById('cancel-event').addEventListener('click', closeEventForm);
+            document.getElementById('overlay').addEventListener('click', closeEventForm);
+            
+            // Selector de colores
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.color-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    selectedColorOption = this.getAttribute('data-color');
+                });
+            });
+            
+            // Eventos para editar un evento existente
+            document.getElementById('submit-event-btn').addEventListener('click', updateEvent);
+            document.getElementById('reset-event-btn').addEventListener('click', resetEventForm);
+            
+            // Cargar los eventos desde localStorage si existen
+            const savedEvents = localStorage.getItem('calendarEvents');
+            if (savedEvents) {
+                events = JSON.parse(savedEvents);
+                nextEventId = calculateNextEventId();
+            }
+        });
+
+        // Función para renderizar el calendario
+        function renderCalendar() {
+            const calendarElement = document.getElementById('calendar');
+            
+            // Limpiar clases de vista
+            calendarElement.classList.remove('week-view', 'day-view', 'list-view');
+            
+            switch(currentView) {
+                case 'month':
+                    renderMonthView();
+                    break;
+                case 'week':
+                    calendarElement.classList.add('week-view');
+                    renderWeekView();
+                    break;
+                case 'day':
+                    calendarElement.classList.add('day-view');
+                    renderDayView();
+                    break;
+                case 'list':
+                    calendarElement.classList.add('list-view');
+                    renderListView();
+                    break;
+                default:
+                    renderMonthView();
+            }
+        }
+        
+        // Función para renderizar la vista de mes
+        function renderMonthView() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Actualizar el encabezado del mes y año
+            const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
+                               'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+            document.getElementById('month-title').textContent = `${monthNames[month]} de ${year}`;
+            
+            // Obtener el primer día del mes y los días totales
+            const firstDayOfMonth = new Date(year, month, 1);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Obtener el día de la semana del primer día (0 = Domingo, 6 = Sábado)
+            const firstDayOfWeek = firstDayOfMonth.getDay();
+            
+            // Limpiar el contenedor del calendario
+            const calendarElement = document.getElementById('calendar');
+            calendarElement.innerHTML = '';
+            
+            // Añadir cabeceras de día
+            const dayHeaders = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.classList.add('calendar-header');
+                header.textContent = day;
+                calendarElement.appendChild(header);
+            });
+            
+            // Añadir días del mes anterior
+            const lastMonth = new Date(year, month, 0);
+            const daysInLastMonth = lastMonth.getDate();
+            
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                const day = daysInLastMonth - firstDayOfWeek + i + 1;
+                const lastMonthDate = new Date(year, month - 1, day);
+                
+                addDayToCalendar(lastMonthDate, true);
+            }
+            
+            // Añadir días del mes actual
+            for (let day = 1; day <= daysInMonth; day++) {
+                const currentMonthDate = new Date(year, month, day);
+                addDayToCalendar(currentMonthDate, false);
+            }
+            
+            // Añadir días del mes siguiente
+            const cellsAdded = firstDayOfWeek + daysInMonth;
+            const cellsNeeded = Math.ceil(cellsAdded / 7) * 7;
+            const daysToAdd = cellsNeeded - cellsAdded;
+            
+            for (let day = 1; day <= daysToAdd; day++) {
+                const nextMonthDate = new Date(year, month + 1, day);
+                addDayToCalendar(nextMonthDate, true);
+            }
+        }
+        
+        // Función para renderizar la vista de semana
+        function renderWeekView() {
+            const calendarElement = document.getElementById('calendar');
+            calendarElement.innerHTML = '';
+            
+            // Obtener el inicio de la semana (domingo)
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+            
+            // Actualizar título
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            document.getElementById('month-title').textContent = 
+                `${startOfWeek.getDate()}–${endOfWeek.getDate()} de ${getMonthName(startOfWeek.getMonth())} de ${startOfWeek.getFullYear()}`;
+            
+            // Añadir header vacío para la columna de tiempo
+            const emptyHeader = document.createElement('div');
+            emptyHeader.classList.add('calendar-header');
+            calendarElement.appendChild(emptyHeader);
+            
+            // Añadir headers de días de la semana
+            const dayNames = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+            for (let i = 0; i < 7; i++) {
+                const dayDate = new Date(startOfWeek);
+                dayDate.setDate(startOfWeek.getDate() + i);
+                
+                const header = document.createElement('div');
+                header.classList.add('week-day-header');
+                header.innerHTML = `${dayNames[i]}, ${dayDate.getDate()}/${dayDate.getMonth() + 1}`;
+                calendarElement.appendChild(header);
+            }
+            
+            // Añadir fila "all-day"
+            const allDayLabel = document.createElement('div');
+            allDayLabel.classList.add('time-label');
+            allDayLabel.textContent = 'all-day';
+            calendarElement.appendChild(allDayLabel);
+            
+            for (let day = 0; day < 7; day++) {
+                const dayDate = new Date(startOfWeek);
+                dayDate.setDate(startOfWeek.getDate() + day);
+                
+                const allDaySlot = document.createElement('div');
+                allDaySlot.classList.add('time-slot');
+                
+                // Añadir eventos "all-day" para este día
+                addAllDayEvents(allDaySlot, dayDate);
+                
+                calendarElement.appendChild(allDaySlot);
+            }
+            
+            // Añadir filas de tiempo (6:00 AM - 6:00 PM como en la imagen)
+            const startHour = 6;
+            const endHour = 18;
+            
+            for (let hour = startHour; hour <= endHour; hour++) {
+                // Añadir etiqueta de tiempo
+                const timeLabel = document.createElement('div');
+                timeLabel.classList.add('time-label');
+                const displayHour = hour > 12 ? hour - 12 : hour;
+                const ampm = hour < 12 ? 'a.m.' : 'p.m.';
+                timeLabel.textContent = `${displayHour}:00 ${ampm}`;
+                calendarElement.appendChild(timeLabel);
+                
+                // Añadir celdas para cada día de la semana
+                for (let day = 0; day < 7; day++) {
+                    const dayDate = new Date(startOfWeek);
+                    dayDate.setDate(startOfWeek.getDate() + day);
+                    
+                    const timeSlot = document.createElement('div');
+                    timeSlot.classList.add('time-slot');
+                    
+                    // Añadir eventos para esta hora y día
+                    addEventsToTimeSlot(timeSlot, dayDate, hour);
+                    
+                    calendarElement.appendChild(timeSlot);
+                }
+            }
+        }
+        
+        // Función para renderizar la vista de día
+        function renderDayView() {
+            const calendarElement = document.getElementById('calendar');
+            calendarElement.innerHTML = '';
+            
+            // Actualizar título
+            const dayNames = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+            document.getElementById('month-title').textContent = 
+                `${currentDate.getDate()} de ${getMonthName(currentDate.getMonth())} de ${currentDate.getFullYear()}`;
+            
+            // Añadir header vacío para la columna de tiempo
+            const emptyHeader = document.createElement('div');
+            emptyHeader.classList.add('calendar-header');
+            calendarElement.appendChild(emptyHeader);
+            
+            // Añadir header del día
+            const dayHeader = document.createElement('div');
+            dayHeader.classList.add('day-header-date');
+            dayHeader.textContent = dayNames[currentDate.getDay()];
+            calendarElement.appendChild(dayHeader);
+            
+            // Añadir fila "all-day"
+            const allDayLabel = document.createElement('div');
+            allDayLabel.classList.add('time-label');
+            allDayLabel.textContent = 'all-day';
+            calendarElement.appendChild(allDayLabel);
+            
+            const allDaySlot = document.createElement('div');
+            allDaySlot.classList.add('time-slot');
+            
+            // Añadir eventos "all-day" para este día
+            addAllDayEvents(allDaySlot, currentDate);
+            
+            calendarElement.appendChild(allDaySlot);
+            
+            // Añadir filas de tiempo (6:00 AM - 6:00 PM)
+            const startHour = 6;
+            const endHour = 18;
+            
+            for (let hour = startHour; hour <= endHour; hour++) {
+                // Añadir etiqueta de tiempo
+                const timeLabel = document.createElement('div');
+                timeLabel.classList.add('time-label');
+                const displayHour = hour > 12 ? hour - 12 : hour;
+                const ampm = hour < 12 ? 'a.m.' : 'p.m.';
+                timeLabel.textContent = `${displayHour}:00 ${ampm}`;
+                calendarElement.appendChild(timeLabel);
+                
+                // Añadir celda del día
+                const timeSlot = document.createElement('div');
+                timeSlot.classList.add('time-slot');
+                
+                // Añadir eventos para esta hora
+                addEventsToTimeSlot(timeSlot, currentDate, hour);
+                
+                calendarElement.appendChild(timeSlot);
+            }
+        }
+        
+        // Función para renderizar la vista de lista
+        function renderListView() {
+            const calendarElement = document.getElementById('calendar');
+            calendarElement.innerHTML = '';
+            
+            // Actualizar título
+            document.getElementById('month-title').textContent = 
+                `${currentDate.getDate()} jul ${currentDate.getFullYear()}`;
+            
+            // Crear contenedor de lista
+            const listContainer = document.createElement('div');
+            listContainer.classList.add('list-view-container');
+            
+            // Agrupar eventos por fecha
+            const groupedEvents = {};
+            
+            for (const dateStr in events) {
+                if (events.hasOwnProperty(dateStr)) {
+                    const eventDate = new Date(dateStr);
+                    const dateKey = formatDate(eventDate);
+                    
+                    if (!groupedEvents[dateKey]) {
+                        groupedEvents[dateKey] = {
+                            date: eventDate,
+                            events: []
+                        };
+                    }
+                    
+                    groupedEvents[dateKey].events.push(...events[dateStr]);
+                }
+            }
+            
+            // Ordenar fechas
+            const sortedDates = Object.keys(groupedEvents).sort();
+            
+            sortedDates.forEach(dateKey => {
+                const dateGroup = groupedEvents[dateKey];
+                
+                // Crear grupo de fecha
+                const dateGroupElement = document.createElement('div');
+                dateGroupElement.classList.add('list-date-group');
+                
+                // Header de fecha
+                const dateHeader = document.createElement('div');
+                dateHeader.classList.add('list-date-header');
+                const dayNames = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+                dateHeader.textContent = `${dayNames[dateGroup.date.getDay()]} ${dateGroup.date.getDate()} de ${getMonthName(dateGroup.date.getMonth())} de ${dateGroup.date.getFullYear()}`;
+                dateGroupElement.appendChild(dateHeader);
+                
+                // Eventos del día
+                dateGroup.events.forEach(event => {
+                    const eventItem = document.createElement('div');
+                    eventItem.classList.add('list-event-item');
+                    eventItem.setAttribute('data-event-id', event.id);
+                    
+                    // Color del evento
+                    const colorDot = document.createElement('div');
+                    colorDot.classList.add('list-event-color');
+                    colorDot.style.backgroundColor = event.backgroundColor;
+                    eventItem.appendChild(colorDot);
+                    
+                    // Contenido del evento
+                    const eventContent = document.createElement('div');
+                    eventContent.classList.add('list-event-content');
+                    
+                    const eventTitle = document.createElement('div');
+                    eventTitle.classList.add('list-event-title');
+                    eventTitle.textContent = event.title;
+                    eventContent.appendChild(eventTitle);
+                    
+                    if (event.time) {
+                        const eventTime = document.createElement('div');
+                        eventTime.classList.add('list-event-time');
+                        eventTime.textContent = event.time;
+                        eventContent.appendChild(eventTime);
+                    }
+                    
+                    eventItem.appendChild(eventContent);
+                    
+                    // Evento click
+                    eventItem.addEventListener('click', function() {
+                        selectedEvent = event;
+                        selectedDate = dateGroup.date;
+                        updateSidePanel();
+                    });
+                    
+                    dateGroupElement.appendChild(eventItem);
+                });
+                
+                listContainer.appendChild(dateGroupElement);
+            });
+            
+            calendarElement.appendChild(listContainer);
+        }
+        
+        // Función para añadir un día al calendario
+        function addDayToCalendar(date, isOtherMonth) {
+            const day = date.getDate();
+            const month = date.getMonth();
+            const year = date.getFullYear();
+            
+            const dayCell = document.createElement('div');
+            dayCell.classList.add('day-cell');
+            
+            if (isOtherMonth) {
+                dayCell.classList.add('other-month');
+            }
+            
+            // Destacar el día de hoy y el día seleccionado
+            const today = new Date('2025-07-11');
+            if (date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()) {
+                dayCell.classList.add('today');
+            }
+            
+            if (date.getDate() === selectedDate.getDate() && date.getMonth() === selectedDate.getMonth() && date.getFullYear() === selectedDate.getFullYear()) {
+                dayCell.classList.add('selected-day');
+            }
+            
+            // Añadir el número del día
+            const dayNumber = document.createElement('div');
+            dayNumber.classList.add('day-number');
+            dayNumber.textContent = day;
+            dayCell.appendChild(dayNumber);
+            
+            // Añadir eventos para este día
+            const dateStr = formatDate(date);
+            if (events[dateStr]) {
+                events[dateStr].forEach(event => {
+                    const eventElement = document.createElement('div');
+                    eventElement.classList.add('event');
+                    eventElement.textContent = event.title;
+                    
+                    // Asignar color basado en el color del evento
+                    eventElement.style.backgroundColor = event.backgroundColor || getColorForCode(event.color);
+                    eventElement.style.color = event.textColor || '#FFFFFF';
+                    
+                    // Añadir el ID del evento como atributo de datos
+                    eventElement.setAttribute('data-event-id', event.id);
+                    
+                    // Añadir evento click para seleccionar el evento
+                    eventElement.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        selectedEvent = event;
+                        updateSidePanel();
+                    });
+                    
+                    dayCell.appendChild(eventElement);
+                });
+            }
+            
+            // Añadir evento click para seleccionar el día
+            dayCell.addEventListener('click', function() {
+                selectedDate = new Date(date);
+                selectedEvent = null;
+                renderCalendar();
+                updateSidePanel();
+            });
+            
+            // Añadir evento doble click para crear nuevo evento
+            dayCell.addEventListener('dblclick', function() {
+                selectedDate = new Date(date);
+                showEventForm();
+            });
+            
+            document.getElementById('calendar').appendChild(dayCell);
+        }
+        
+        // Función para formatear fecha
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        // Función para obtener color basado en código
+        function getColorForCode(colorCode) {
+            const colors = {
+                '1': '#4CAF50',
+                '2': '#2196F3',
+                '3': '#f44336',
+                '4': '#FF9800',
+                '5': '#9C27B0',
+                '6': '#795548',
+                '7': '#607D8B',
+                '8': '#E91E63'
+            };
+            return colors[colorCode] || '#4CAF50';
+        }
+        
+        // Función para obtener nombre del mes
+        function getMonthName(monthIndex) {
+            const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
+                               'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+            return monthNames[monthIndex];
+        }
+        
+        // Función para añadir eventos a un slot de tiempo
+        function addEventsToTimeSlot(timeSlot, date, hour) {
+            const dateStr = formatDate(date);
+            if (events[dateStr]) {
+                events[dateStr].forEach(event => {
+                    // Verificar si el evento coincide con esta hora
+                    if (event.time) {
+                        const eventHour = parseInt(event.time.split(':')[0]);
+                        if (eventHour === hour) {
+                            const eventElement = document.createElement('div');
+                            eventElement.classList.add('week-event');
+                            eventElement.textContent = event.title;
+                            eventElement.style.backgroundColor = event.backgroundColor;
+                            eventElement.style.color = event.textColor;
+                            eventElement.setAttribute('data-event-id', event.id);
+                            
+                            eventElement.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                selectedEvent = event;
+                                selectedDate = date;
+                                updateSidePanel();
+                            });
+                            
+                            timeSlot.appendChild(eventElement);
+                        }
+                    }
+                });
+            }
+            
+            // Añadir funcionalidad de doble click para crear eventos
+            timeSlot.addEventListener('dblclick', function() {
+                selectedDate = new Date(date);
+                showEventForm();
+            });
+        }
+        
+        // Función para añadir eventos "all-day"
+        function addAllDayEvents(timeSlot, date) {
+            const dateStr = formatDate(date);
+            if (events[dateStr]) {
+                events[dateStr].forEach(event => {
+                    // Solo mostrar eventos sin hora específica
+                    if (!event.time) {
+                        const eventElement = document.createElement('div');
+                        eventElement.classList.add('week-event');
+                        eventElement.textContent = event.title;
+                        eventElement.style.backgroundColor = event.backgroundColor;
+                        eventElement.style.color = event.textColor;
+                        eventElement.setAttribute('data-event-id', event.id);
+                        
+                        eventElement.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            selectedEvent = event;
+                            selectedDate = date;
+                            updateSidePanel();
+                        });
+                        
+                        timeSlot.appendChild(eventElement);
+                    }
+                });
+            }
+            
+            // Añadir funcionalidad de doble click para crear eventos
+            timeSlot.addEventListener('dblclick', function() {
+                selectedDate = new Date(date);
+                showEventForm();
+            });
+        }
+        
+        // Función para mostrar el formulario de eventos
+        function showEventForm() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('event-form').style.display = 'block';
+            
+            // Limpiar el formulario
+            document.getElementById('new-event-title').value = '';
+            document.getElementById('new-event-time').value = '';
+            document.getElementById('new-start-editable').checked = false;
+            document.getElementById('new-duration-editable').checked = false;
+            document.getElementById('new-event-display').value = '';
+            document.getElementById('new-event-extended-props').value = '';
+            document.getElementById('new-event-background-color').value = '';
+            document.getElementById('new-event-text-color').value = '';
+            
+            // Restablecer color seleccionado
+            document.querySelectorAll('.color-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.querySelector('.color-option[data-color="1"]').classList.add('selected');
+            selectedColorOption = '1';
+        }
+        
+        // Función para cerrar el formulario de eventos
+        function closeEventForm() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('event-form').style.display = 'none';
+        }
+        
+        // Función para guardar evento
+        function saveEvent() {
+            const title = document.getElementById('new-event-title').value;
+            const time = document.getElementById('new-event-time').value;
+            const startEditable = document.getElementById('new-start-editable').checked;
+            const durationEditable = document.getElementById('new-duration-editable').checked;
+            const display = document.getElementById('new-event-display').value;
+            const extendedProps = document.getElementById('new-event-extended-props').value;
+            const backgroundColor = document.getElementById('new-event-background-color').value;
+            const textColor = document.getElementById('new-event-text-color').value;
+            
+            if (!title.trim()) {
+                alert('Por favor, ingrese un título para el evento');
+                return;
+            }
+            
+            const dateStr = formatDate(selectedDate);
+            
+            if (!events[dateStr]) {
+                events[dateStr] = [];
+            }
+            
+            const newEvent = {
+                id: nextEventId++,
+                title: title,
+                time: time,
+                color: selectedColorOption,
+                backgroundColor: backgroundColor || getColorForCode(selectedColorOption),
+                textColor: textColor || '#FFFFFF',
+                startEditable: startEditable,
+                durationEditable: durationEditable,
+                display: display,
+                extendedProps: extendedProps,
+                editable: true
+            };
+            
+            events[dateStr].push(newEvent);
+            
+            // Guardar en localStorage
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+            
+            closeEventForm();
+            renderCalendar();
+            updateSidePanel();
+        }
+        
+        // Función para actualizar el panel lateral
+        function updateSidePanel() {
+            // Actualizar fecha seleccionada
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            const formattedDate = selectedDate.toLocaleDateString('en-US', options);
+            document.getElementById('selected-date').textContent = formattedDate;
+            
+            // Actualizar detalles del evento seleccionado
+            if (selectedEvent) {
+                document.getElementById('event-id').value = selectedEvent.id;
+                document.getElementById('event-start').value = formatDate(selectedDate);
+                document.getElementById('event-end').value = formatDate(selectedDate);
+                document.getElementById('event-display').value = selectedEvent.display || '';
+                document.getElementById('event-extended-props').value = selectedEvent.extendedProps || '';
+                document.getElementById('event-background-color').value = selectedEvent.backgroundColor || '';
+                document.getElementById('event-text-color').value = selectedEvent.textColor || '';
+                document.getElementById('event-title').value = selectedEvent.title || '';
+                document.getElementById('event-title-html').value = selectedEvent.title || '';
+                
+                // Actualizar toggles
+                document.getElementById('all-toggle').checked = selectedEvent.allDay || false;
+                document.getElementById('day-toggle').checked = selectedEvent.dayEvent || false;
+                document.getElementById('start-editable-toggle').checked = selectedEvent.startEditable || false;
+                document.getElementById('duration-editable-toggle').checked = selectedEvent.durationEditable || false;
+                document.getElementById('editable-toggle').checked = selectedEvent.editable || false;
+                
+                // Actualizar Resource Ids - seleccionar colores basados en el color del evento
+                const resourceSelect = document.getElementById('resource-ids');
+                Array.from(resourceSelect.options).forEach(option => {
+                    option.selected = false;
+                });
+                // Seleccionar el color correspondiente al evento
+                if (selectedEvent.color) {
+                    const colorOption = resourceSelect.querySelector(`option[value="color-${selectedEvent.color}"]`);
+                    if (colorOption) {
+                        colorOption.selected = true;
+                    }
+                }
+            } else {
+                // Limpiar campos si no hay evento seleccionado
+                document.getElementById('event-id').value = nextEventId;
+                document.getElementById('event-start').value = formatDate(selectedDate);
+                document.getElementById('event-end').value = formatDate(selectedDate);
+                document.getElementById('event-display').value = '';
+                document.getElementById('event-extended-props').value = '';
+                document.getElementById('event-background-color').value = '';
+                document.getElementById('event-text-color').value = '';
+                document.getElementById('event-title').value = '';
+                document.getElementById('event-title-html').value = '';
+                
+                // Limpiar toggles
+                document.getElementById('all-toggle').checked = false;
+                document.getElementById('day-toggle').checked = false;
+                document.getElementById('start-editable-toggle').checked = false;
+                document.getElementById('duration-editable-toggle').checked = false;
+                document.getElementById('editable-toggle').checked = false;
+                
+                // Limpiar Resource Ids
+                const resourceSelect = document.getElementById('resource-ids');
+                Array.from(resourceSelect.options).forEach(option => {
+                    option.selected = false;
+                });
+            }
+        }
+        
+        // Función para actualizar evento existente
+        function updateEvent() {
+            const newId = parseInt(document.getElementById('event-id').value);
+            const title = document.getElementById('event-title').value;
+            const display = document.getElementById('event-display').value;
+            const extendedProps = document.getElementById('event-extended-props').value;
+            const backgroundColor = document.getElementById('event-background-color').value;
+            const textColor = document.getElementById('event-text-color').value;
+            const allDay = document.getElementById('all-toggle').checked;
+            const dayEvent = document.getElementById('day-toggle').checked;
+            const startEditable = document.getElementById('start-editable-toggle').checked;
+            const durationEditable = document.getElementById('duration-editable-toggle').checked;
+            const editable = document.getElementById('editable-toggle').checked;
+            
+            // Obtener Resource Ids seleccionados
+            const resourceSelect = document.getElementById('resource-ids');
+            const selectedResources = Array.from(resourceSelect.selectedOptions).map(option => option.value);
+            
+            if (!title.trim()) {
+                alert('Por favor, ingrese un título para el evento');
+                return;
+            }
+            
+            if (selectedEvent) {
+                // Actualizar evento existente
+                selectedEvent.id = newId || selectedEvent.id;
+                selectedEvent.title = title;
+                selectedEvent.display = display;
+                selectedEvent.extendedProps = extendedProps;
+                selectedEvent.backgroundColor = backgroundColor;
+                selectedEvent.textColor = textColor;
+                selectedEvent.allDay = allDay;
+                selectedEvent.dayEvent = dayEvent;
+                selectedEvent.startEditable = startEditable;
+                selectedEvent.durationEditable = durationEditable;
+                selectedEvent.editable = editable;
+                selectedEvent.resourceIds = selectedResources;
+                
+                // Actualizar el color basado en el primer Resource Id seleccionado
+                if (selectedResources.length > 0) {
+                    const colorNumber = selectedResources[0].replace('color-', '');
+                    selectedEvent.color = colorNumber;
+                    selectedEvent.backgroundColor = getColorForCode(colorNumber);
+                }
+            } else {
+                // Crear nuevo evento
+                const dateStr = formatDate(selectedDate);
+                
+                if (!events[dateStr]) {
+                    events[dateStr] = [];
+                }
+                
+                const newEvent = {
+                    id: newId || nextEventId++,
+                    title: title,
+                    time: '',
+                    color: selectedResources.length > 0 ? selectedResources[0].replace('color-', '') : '1',
+                    backgroundColor: backgroundColor || (selectedResources.length > 0 ? getColorForCode(selectedResources[0].replace('color-', '')) : getColorForCode('1')),
+                    textColor: textColor || '#FFFFFF',
+                    allDay: allDay,
+                    dayEvent: dayEvent,
+                    startEditable: startEditable,
+                    durationEditable: durationEditable,
+                    display: display,
+                    extendedProps: extendedProps,
+                    editable: editable,
+                    resourceIds: selectedResources
+                };
+                
+                events[dateStr].push(newEvent);
+                selectedEvent = newEvent;
+            }
+            
+            // Guardar en localStorage
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+            
+            renderCalendar();
+            updateSidePanel();
+        }
+        
+        // Función para resetear el formulario de evento
+        function resetEventForm() {
+            if (selectedEvent) {
+                updateSidePanel();
+            }
+        }
+    </script>
+</body>
+</html>
