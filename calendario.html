@@ -222,7 +222,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            cursor: pointer;
+            cursor: grab;
             z-index: 10;
         }
         
@@ -275,7 +275,7 @@
             padding: 4px 6px;
             border-radius: 3px;
             font-size: 12px;
-            cursor: pointer;
+            cursor: grab;
             color: white;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -283,23 +283,256 @@
         }
         
         .side-panel {
-            width: 300px;
-            padding: 15px;
-            border-left: 1px solid #ddd;
-            background-color: #f9f9f9;
+            width: 400px;
+            background-color: #ffffff;
+            border-left: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .panel-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+            padding: 5px;
+        }
+        
+        .panel-content {
+            flex: 1;
             overflow-y: auto;
+            padding: 20px;
         }
         
-        .side-panel h3 {
-            margin-bottom: 15px;
-        }
-        
-        .panel-section {
+        .search-section {
             margin-bottom: 20px;
         }
         
-        .panel-section h4 {
+        .search-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .search-section input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .patient-data-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .patient-data-section h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .data-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .btn-historial {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .btn-modificar {
+            background-color: #ffc107;
+            color: #333;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        .form-group.full-width {
+            flex: 1 1 100%;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            background-color: #f8f9fa;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .note {
+            font-size: 11px;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        .treatment-input {
+            display: flex;
+            gap: 5px;
             margin-bottom: 10px;
+        }
+        
+        .treatment-input input {
+            flex: 1;
+        }
+        
+        .btn-add-treatment {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .required-note {
+            margin-top: 10px;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .appointment-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .time-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .doctor-section {
+            margin-bottom: 20px;
+        }
+        
+        .doctor-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .doctor-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .doctor-tag {
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .doctor-tag:hover {
+            background-color: #dee2e6;
+            transform: translateY(-1px);
+        }
+        
+        .doctor-tag.active:hover {
+            background-color: #0056b3;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
         }
         
         input, select, textarea {
@@ -488,6 +721,235 @@
         .color-input {
             height: 36px;
         }
+
+        /* Estilos adicionales para el formulario de citas médicas */
+        .search-section input:focus,
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        
+        .form-group input.error,
+        .form-group select.error,
+        .form-group textarea.error {
+            border-color: #f44336;
+            box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.25);
+        }
+        
+        .btn-historial:hover {
+            background-color: #138496;
+        }
+        
+        .btn-modificar:hover {
+            background-color: #e0a800;
+        }
+        
+        .btn-add-treatment:hover {
+            background-color: #218838;
+        }
+        
+        .doctor-tag:hover {
+            background-color: #dee2e6;
+            transform: translateY(-1px);
+        }
+        
+        .doctor-tag.active:hover {
+            background-color: #0056b3;
+        }
+        
+        .treatment-input input:focus + .btn-add-treatment {
+            background-color: #218838;
+        }
+        
+        .patient-data-section {
+            transition: all 0.3s ease;
+        }
+        
+        .patient-data-section:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .appointment-section {
+            transition: all 0.3s ease;
+        }
+        
+        .appointment-section:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .panel-content {
+            scrollbar-width: thin;
+            scrollbar-color: #dee2e6 #f8f9fa;
+        }
+        
+        .panel-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .panel-content::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+        
+        .panel-content::-webkit-scrollbar-thumb {
+            background-color: #dee2e6;
+            border-radius: 4px;
+        }
+        
+        .panel-content::-webkit-scrollbar-thumb:hover {
+            background-color: #adb5bd;
+        }
+        
+        .form-actions {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .required-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 8px;
+            margin-top: 10px;
+            font-size: 11px;
+            color: #856404;
+        }
+        
+        .patient-data-section h4 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .search-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .search-section input {
+            background-color: white;
+            font-weight: 500;
+        }
+        
+        .time-section .form-group {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .time-section .form-group:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
+        }
+        
+        .time-section .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .time-section .form-group input {
+            background-color: white;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            padding: 10px;
+        }
+        
+        .time-section .form-group input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        
+        @media (max-width: 768px) {
+            .side-panel {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 1000;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .time-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .doctor-tags {
+                justify-content: center;
+            }
+        }
+
+        /* Estilos para Drag and Drop */
+        .event[draggable="true"] {
+            cursor: grab;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        
+        .event[draggable="true"]:active {
+            cursor: grabbing;
+        }
+        
+        .event.dragging {
+            cursor: grabbing;
+            opacity: 0.7;
+        }
+        
+        .event[draggable="true"]:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            position: relative;
+        }
+        
+        .event.dragging {
+            opacity: 0.6;
+            transform: rotate(2deg) scale(1.05);
+            z-index: 1000;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .day-cell.drag-over {
+            background-color: #e3f2fd !important;
+            border: 2px dashed #2196F3 !important;
+            transform: scale(1.02);
+            transition: all 0.2s ease;
+        }
+        
+        .day-cell {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .drag-ghost {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        
+        /* Indicador visual cuando se puede soltar */
+        .drop-zone-active {
+            background-color: #e8f5e8 !important;
+            border: 2px solid #4caf50 !important;
+        }
+        
+        /* Estilo para eventos siendo arrastrados */
+        .event-being-dragged {
+            opacity: 0.3;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -522,116 +984,126 @@
     </div>
     
     <div class="side-panel">
-        <div class="panel-section">
-            <h3>Selected Date</h3>
-            <div id="selected-date">11th Jul 2025</div>
+        <div class="panel-header">
+            <h3>Agregar cita</h3>
+            <button class="close-btn" id="close-panel">×</button>
         </div>
         
-        <div class="panel-section">
-            <h3>Selected Event</h3>
-            <div id="selected-event-details">
-                <div class="form-field">
-                    <label>Id</label>
-                    <input type="number" id="event-id" placeholder="Event ID">
+        <div class="panel-content">
+            <div class="search-section">
+                <label>Buscar paciente</label>
+                <input type="text" id="search-patient" placeholder="VICTOR MANUEL LUNA RAMOS">
+            </div>
+            
+            <div class="patient-data-section">
+                <h4>Datos paciente</h4>
+                <div class="data-actions">
+                    <button class="btn-historial">Historial</button>
+                    <button class="btn-modificar">Modificar datos</button>
                 </div>
                 
-                <div class="form-field">
-                    <label>Resource Ids</label>
-                    <select id="resource-ids" multiple size="4">
-                        <option value="color-1">🟢 Verde</option>
-                        <option value="color-2">🔵 Azul</option>
-                        <option value="color-3">🔴 Rojo</option>
-                        <option value="color-4">🟠 Naranja</option>
-                        <option value="color-5">🟣 Púrpura</option>
-                        <option value="color-6">🟤 Marrón</option>
-                        <option value="color-7">⚫ Azul Gris</option>
-                        <option value="color-8">🩷 Rosa</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre(s)*</label>
+                        <input type="text" id="patient-name" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido paterno*</label>
+                        <input type="text" id="patient-lastname1" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido materno*</label>
+                        <input type="text" id="patient-lastname2" placeholder="">
+                    </div>
                 </div>
                 
-                <div class="toggle-container">
-                    <span>All</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="all-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <input type="text" id="patient-address" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono*</label>
+                        <input type="tel" id="patient-phone" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono 2</label>
+                        <input type="tel" id="patient-phone2" placeholder="">
+                    </div>
                 </div>
                 
-                <div class="toggle-container">
-                    <span>Day</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="day-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>Seleccione Aseguranza</label>
+                        <select id="patient-insurance">
+                            <option value="">Seleccionar...</option>
+                            <option value="seguro1">Seguro Médico 1</option>
+                            <option value="seguro2">Seguro Médico 2</option>
+                        </select>
+                    </div>
                 </div>
                 
-                <div class="form-field">
-                    <label>Start</label>
-                    <input type="date" id="event-start">
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>Correo* <span class="note">(el correo es importante para enviarle al cliente su recordatorio de cita)</span></label>
+                        <input type="email" id="patient-email" placeholder="">
+                    </div>
                 </div>
                 
-                <div class="toggle-container">
-                    <span>Start Editable</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="start-editable-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>Tratamiento(s)</label>
+                        <div class="treatment-input">
+                            <input type="text" id="treatment-search" placeholder="REVISION" value="REVISION">
+                            <button class="btn-add-treatment">+</button>
+                        </div>
+                        <textarea id="treatment-notes" placeholder="Nota o mensaje, para la cita."></textarea>
+                    </div>
                 </div>
                 
-                <div class="form-field">
-                    <label>End</label>
-                    <input type="date" id="event-end">
+                <div class="required-note">
+                    <em>* Campos obligatorios</em>
+                </div>
+            </div>
+            
+            <div class="appointment-section">
+                <div class="time-section">
+                    <div class="form-group">
+                        <label>Hora inicio</label>
+                        <input type="datetime-local" id="start-time" value="2025-07-08T10:00">
+                    </div>
+                    <div class="form-group">
+                        <label>Hora final</label>
+                        <input type="datetime-local" id="end-time" value="2025-07-08T10:30">
+                    </div>
                 </div>
                 
-                <div class="toggle-container">
-                    <span>Duration Editable</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="duration-editable-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
+                <div class="doctor-section">
+                    <label>Médico</label>
+                    <div class="doctor-tags">
+                        <span class="doctor-tag active">Julieta Luna</span>
+                        <span class="doctor-tag">Lucero Cortes</span>
+                        <span class="doctor-tag">Angel Manuel Martinez</span>
+                        <span class="doctor-tag">Alejandra Abigail</span>
+                        <span class="doctor-tag">Fernando Garcia</span>
+                        <span class="doctor-tag">German Gaxiola</span>
+                        <span class="doctor-tag">Irma Fernandez</span>
+                        <span class="doctor-tag">Angel Martinez 2</span>
+                        <span class="doctor-tag">Jose Cisneros</span>
+                        <span class="doctor-tag">Saul Hernandez</span>
+                        <span class="doctor-tag">Christopher Verduzco</span>
+                        <span class="doctor-tag">Thania Paniagua</span>
+                        <span class="doctor-tag">Angela Gonzalez</span>
+                        <span class="doctor-tag">GABRIELA RUIZ</span>
+                        <span class="doctor-tag">JORGE ARMANDO LOPEZ</span>
+                        <span class="doctor-tag">MAIKEL HERMIDA</span>
+                        <span class="doctor-tag">JESUS IBARRA</span>
+                    </div>
                 </div>
                 
-                <div class="form-field">
-                    <label>Display</label>
-                    <input type="text" id="event-display">
-                </div>
-                
-                <div class="form-field">
-                    <label>Extended Props</label>
-                    <input type="text" id="event-extended-props">
-                </div>
-                
-                <div class="form-field">
-                    <label>Background Color</label>
-                    <input type="text" id="event-background-color" class="color-input">
-                </div>
-                
-                <div class="form-field">
-                    <label>Text Color</label>
-                    <input type="text" id="event-text-color" class="color-input">
-                </div>
-                
-                <div class="form-field">
-                    <label>Title</label>
-                    <input type="text" id="event-title" placeholder="Event title">
-                </div>
-                
-                <div class="form-field">
-                    <label>Title HTML</label>
-                    <textarea id="event-title-html" rows="3"></textarea>
-                </div>
-                
-                <div class="toggle-container">
-                    <span>Editable</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="editable-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <div class="form-buttons">
-                    <button id="reset-event-btn" class="reset-btn">Reset</button>
-                    <button id="submit-event-btn" class="save-btn">Submit</button>
+                <div class="form-actions">
+                    <button class="btn-secondary" id="cancel-appointment">Cerrar</button>
+                    <button class="btn-primary" id="save-appointment">Agendar</button>
                 </div>
             </div>
         </div>
@@ -723,58 +1195,58 @@
         // Eventos precargados según la imagen
         let events = {
             '2025-07-06': [
-                { id: 1, title: 'Project Kickoff', time: '', color: '6', backgroundColor: '#795548', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 1, title: 'Project Kickoff', time: '', color: '6', backgroundColor: '#795548', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-07': [
-                { id: 2, title: 'Team Collaboration', time: '', color: '4', backgroundColor: '#FF9800', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 2, title: 'Team Collaboration', time: '', color: '4', backgroundColor: '#FF9800', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-08': [
-                { id: 3, title: 'Client Presentation', time: '10:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 3, title: 'Client Presentation', time: '10:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-09': [
-                { id: 4, title: 'Strategic Planning', time: '7:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 4, title: 'Strategic Planning', time: '7:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-10': [
-                { id: 5, title: 'Product Development', time: '', color: '2', backgroundColor: '#2196F3', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 5, title: 'Product Development', time: '', color: '2', backgroundColor: '#2196F3', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-11': [
-                { id: 6, title: 'Training Session', time: '10:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 6, title: 'Training Session', time: '10:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-13': [
-                { id: 7, title: 'Quarterly Review', time: '16:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 7, title: 'Quarterly Review', time: '16:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-14': [
-                { id: 8, title: 'Innovation Workshop', time: '10:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 8, title: 'Innovation Workshop', time: '10:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-15': [
-                { id: 9, title: 'Marketing Strategy', time: '7:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 9, title: 'Marketing Strategy', time: '7:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-16': [
-                { id: 10, title: 'Budget Planning', time: '6:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 10, title: 'Budget Planning', time: '6:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-17': [
-                { id: 11, title: 'Performance Evaluation', time: '', color: '6', backgroundColor: '#795548', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 11, title: 'Performance Evaluation', time: '', color: '6', backgroundColor: '#795548', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-18': [
-                { id: 12, title: '9:00 p.m. Business Development', time: '9:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 12, title: '9:00 p.m. Business Development', time: '9:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-19': [
-                { id: 13, title: '9:00 p.m. Customer Feedback', time: '9:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 13, title: '9:00 p.m. Customer Feedback', time: '9:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-20': [
-                { id: 14, title: '10:00 p.m. Quality Assurance', time: '10:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 14, title: '10:00 p.m. Quality Assurance', time: '10:00', color: '1', backgroundColor: '#4CAF50', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-21': [
-                { id: 15, title: '6:00 p.m. Sales Pitch', time: '6:00', color: '2', backgroundColor: '#2196F3', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 15, title: '6:00 p.m. Sales Pitch', time: '6:00', color: '2', backgroundColor: '#2196F3', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-22': [
-                { id: 16, title: '4:00 p.m. Leadership Training', time: '4:00', color: '5', backgroundColor: '#9C27B0', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 16, title: '4:00 p.m. Leadership Training', time: '4:00', color: '5', backgroundColor: '#9C27B0', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-23': [
-                { id: 17, title: '3:00 p.m. Market Research', time: '3:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 17, title: '3:00 p.m. Market Research', time: '3:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-24': [
-                { id: 18, title: '8:00 p.m. Cross-functional Meeting', time: '8:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
+                { id: 18, title: '8:00 p.m. Cross-functional Meeting', time: '8:00', color: '3', backgroundColor: '#f44336', textColor: '#FFFFFF', startEditable: true, durationEditable: true, display: '', extendedProps: '', editable: true }
             ],
             '2025-07-25': [
                 { id: 19, title: '7:00 p.m. Employee Recognition', time: '7:00', color: '4', backgroundColor: '#FF9800', textColor: '#FFFFFF', startEditable: false, durationEditable: false, display: '', extendedProps: '', editable: false }
@@ -819,6 +1291,39 @@
                 } else if (currentView === 'day') {
                     currentDate.setDate(currentDate.getDate() - 1);
                 }
+                
+                // Llamada al backend para notificar cambio de período
+                const periodData = {
+                    action: 'navigate_previous',
+                    currentView: currentView,
+                    currentDate: formatDate(currentDate),
+                    year: currentDate.getFullYear(),
+                    month: currentDate.getMonth() + 1, // Mes en formato 1-12
+                    day: currentDate.getDate(),
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Mostrar alerta de navegación
+                alert('Navegando al mes anterior...');
+                
+                // Intento de petición HTTP al backend (con manejo de errores mejorado)
+                try {
+                    fetch('/api/calendar/navigate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(periodData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('✅ Respuesta del backend:', data);
+                    })
+                    .catch(error => {
+                        console.error('❌ Error en petición:', error);
+                    });
+                } catch (error) {
+                    console.error('Error al hacer fetch:', error);
+                }
+                
                 renderCalendar();
             });
             
@@ -830,6 +1335,39 @@
                 } else if (currentView === 'day') {
                     currentDate.setDate(currentDate.getDate() + 1);
                 }
+                
+                // Llamada al backend para notificar cambio de período
+                const periodData = {
+                    action: 'navigate_next',
+                    currentView: currentView,
+                    currentDate: formatDate(currentDate),
+                    year: currentDate.getFullYear(),
+                    month: currentDate.getMonth() + 1, // Mes en formato 1-12
+                    day: currentDate.getDate(),
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Mostrar alerta de navegación
+                alert('Navegando al mes siguiente...');
+                
+                // Intento de petición HTTP al backend (con manejo de errores mejorado)
+                try {
+                    fetch('/api/calendar/navigate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(periodData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('✅ Respuesta del backend:', data);
+                    })
+                    .catch(error => {
+                        console.error('❌ Error en petición:', error);
+                    });
+                } catch (error) {
+                    console.error('Error al hacer fetch:', error);
+                }
+                
                 renderCalendar();
             });
             
@@ -837,6 +1375,39 @@
             document.getElementById('today-btn').addEventListener('click', function() {
                 currentDate = new Date('2025-07-11'); // Usar la fecha de la imagen como "hoy"
                 selectedDate = new Date('2025-07-11');
+                
+                // Llamada al backend para notificar navegación a "hoy"
+                const periodData = {
+                    action: 'navigate_today',
+                    currentView: currentView,
+                    currentDate: formatDate(currentDate),
+                    year: currentDate.getFullYear(),
+                    month: currentDate.getMonth() + 1, // Mes en formato 1-12
+                    day: currentDate.getDate(),
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Mostrar alerta de navegación
+                alert('Navegando a hoy...');
+                
+                // Intento de petición HTTP al backend (con manejo de errores mejorado)
+                try {
+                    fetch('/api/calendar/navigate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(periodData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('✅ Respuesta del backend:', data);
+                    })
+                    .catch(error => {
+                        console.error('❌ Error en petición:', error);
+                    });
+                } catch (error) {
+                    console.error('Error al hacer fetch:', error);
+                }
+                
                 renderCalendar();
                 updateSidePanel();
             });
@@ -880,6 +1451,9 @@
                 events = JSON.parse(savedEvents);
                 nextEventId = calculateNextEventId();
             }
+            
+            // Inicializar el formulario de citas médicas
+            initializeMedicalAppointmentForm();
         });
 
         // Función para renderizar el calendario
@@ -981,7 +1555,7 @@
             const endOfWeek = new Date(startOfWeek);
             endOfWeek.setDate(startOfWeek.getDate() + 6);
             document.getElementById('month-title').textContent = 
-                `${startOfWeek.getDate()}–${endOfWeek.getDate()} de ${getMonthName(startOfWeek.getMonth())} de ${startOfWeek.getFullYear()}`;
+                `${startOfWeek.getDate()} ${getMonthName(startOfWeek.getMonth())} - ${endOfWeek.getDate()} ${getMonthName(endOfWeek.getMonth())} ${endOfWeek.getFullYear()}`;
             
             // Añadir header vacío para la columna de tiempo
             const emptyHeader = document.createElement('div');
@@ -994,10 +1568,36 @@
                 const dayDate = new Date(startOfWeek);
                 dayDate.setDate(startOfWeek.getDate() + i);
                 
-                const header = document.createElement('div');
-                header.classList.add('week-day-header');
-                header.innerHTML = `${dayNames[i]}, ${dayDate.getDate()}/${dayDate.getMonth() + 1}`;
-                calendarElement.appendChild(header);
+                const weekDayHeader = document.createElement('div');
+                weekDayHeader.classList.add('week-day-header');
+                weekDayHeader.innerHTML = `${dayNames[i]}<br>${dayDate.getDate()}`;
+                
+                // Agregar funcionalidad de drop para los encabezados de día
+                weekDayHeader.addEventListener('dragover', function(e) {
+                    e.preventDefault(); // Permite el drop
+                    weekDayHeader.classList.add('drag-over');
+                });
+                
+                weekDayHeader.addEventListener('dragleave', function() {
+                    weekDayHeader.classList.remove('drag-over');
+                });
+                
+                weekDayHeader.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    weekDayHeader.classList.remove('drag-over');
+                    
+                    // Obtener el evento y su fecha original
+                    const eventId = e.dataTransfer.getData('text/plain');
+                    const originalDateStr = e.dataTransfer.getData('originalDate');
+                    
+                    if (eventId && originalDateStr) {
+                        const newDate = new Date(dayDate);
+                        moveEventToDate(parseInt(eventId), originalDateStr, formatDate(newDate));
+                        renderCalendar();
+                    }
+                });
+                
+                calendarElement.appendChild(weekDayHeader);
             }
             
             // Añadir fila "all-day"
@@ -1012,9 +1612,34 @@
                 
                 const allDaySlot = document.createElement('div');
                 allDaySlot.classList.add('time-slot');
+                allDaySlot.classList.add('all-day-slot');
                 
                 // Añadir eventos "all-day" para este día
                 addAllDayEvents(allDaySlot, dayDate);
+                
+                // Hacer que el slot all-day sea un destino válido para soltar
+                allDaySlot.addEventListener('dragover', function(e) {
+                    e.preventDefault(); // Permite el drop
+                    allDaySlot.classList.add('drag-over');
+                });
+                
+                allDaySlot.addEventListener('dragleave', function() {
+                    allDaySlot.classList.remove('drag-over');
+                });
+                
+                allDaySlot.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    allDaySlot.classList.remove('drag-over');
+                    
+                    // Obtener el evento y su fecha original
+                    const eventId = e.dataTransfer.getData('text/plain');
+                    const originalDateStr = e.dataTransfer.getData('originalDate');
+                    
+                    if (eventId && originalDateStr) {
+                        moveEventToDate(parseInt(eventId), originalDateStr, formatDate(dayDate));
+                        renderCalendar();
+                    }
+                });
                 
                 calendarElement.appendChild(allDaySlot);
             }
@@ -1040,8 +1665,36 @@
                     const timeSlot = document.createElement('div');
                     timeSlot.classList.add('time-slot');
                     
-                    // Añadir eventos para esta hora y día
+                    // Añadir eventos para esta hora
                     addEventsToTimeSlot(timeSlot, dayDate, hour);
+                    
+                    // Hacer que el slot de tiempo sea un destino válido para soltar
+                    timeSlot.addEventListener('dragover', function(e) {
+                        e.preventDefault(); // Permite el drop
+                        timeSlot.classList.add('drag-over');
+                    });
+                    
+                    timeSlot.addEventListener('dragleave', function() {
+                        timeSlot.classList.remove('drag-over');
+                    });
+                    
+                    timeSlot.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        timeSlot.classList.remove('drag-over');
+                        
+                        // Obtener el evento y su fecha original
+                        const eventId = e.dataTransfer.getData('text/plain');
+                        const originalDateStr = e.dataTransfer.getData('originalDate');
+                        
+                        if (eventId && originalDateStr) {
+                            // Mover el evento y actualizar la hora si es necesario
+                            const newDate = new Date(dayDate);
+                            newDate.setHours(hour);
+                            
+                            moveEventToDate(parseInt(eventId), originalDateStr, formatDate(newDate));
+                            renderCalendar();
+                        }
+                    });
                     
                     calendarElement.appendChild(timeSlot);
                 }
@@ -1231,6 +1884,47 @@
             dayNumber.textContent = day;
             dayCell.appendChild(dayNumber);
             
+            // Hacer que la celda del día sea un destino válido para soltar eventos
+            dayCell.addEventListener('dragover', function(e) {
+                e.preventDefault(); // Permite el drop
+                e.stopPropagation();
+                dayCell.classList.add('drag-over');
+            });
+            
+            dayCell.addEventListener('dragenter', function(e) {
+                e.preventDefault();
+                dayCell.classList.add('drag-over');
+            });
+            
+            dayCell.addEventListener('dragleave', function(e) {
+                // Solo quitar la clase si realmente salimos de la celda
+                if (!dayCell.contains(e.relatedTarget)) {
+                    dayCell.classList.remove('drag-over');
+                }
+            });
+            
+            dayCell.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dayCell.classList.remove('drag-over');
+                
+                // Obtener el evento y su fecha original
+                const eventId = e.dataTransfer.getData('text/plain');
+                const originalDateStr = e.dataTransfer.getData('originalDate');
+                
+                if (eventId && originalDateStr) {
+                    const newDateStr = formatDate(date);
+                    if (originalDateStr !== newDateStr) {
+                        moveEventToDate(parseInt(eventId), originalDateStr, newDateStr);
+                        renderCalendar();
+                        updateSidePanel();
+                        
+                        // Mostrar confirmación visual
+                        showDropConfirmation(dayCell);
+                    }
+                }
+            });
+            
             // Añadir eventos para este día
             const dateStr = formatDate(date);
             if (events[dateStr]) {
@@ -1246,10 +1940,53 @@
                     // Añadir el ID del evento como atributo de datos
                     eventElement.setAttribute('data-event-id', event.id);
                     
+                    // Hacer que el evento sea arrastrable si es editable
+                    if (event.editable !== false) { // Por defecto son editables
+                        eventElement.setAttribute('draggable', 'true');
+                        
+                        eventElement.addEventListener('dragstart', function(e) {
+                            e.dataTransfer.setData('text/plain', event.id);
+                            e.dataTransfer.setData('originalDate', dateStr);
+                            e.dataTransfer.effectAllowed = 'move';
+                            
+                            // Añadir clase visual
+                            eventElement.classList.add('dragging');
+                            
+                            // Guardar referencia del elemento siendo arrastrado
+                            window.draggedElement = eventElement;
+                            
+                            // Hacer que otros eventos sean menos visibles
+                            document.querySelectorAll('.event').forEach(el => {
+                                if (el !== eventElement) {
+                                    el.classList.add('event-being-dragged');
+                                }
+                            });
+                        });
+                        
+                        eventElement.addEventListener('dragend', function(e) {
+                            // Limpiar clases visuales
+                            eventElement.classList.remove('dragging');
+                            
+                            // Restaurar visibilidad de otros eventos
+                            document.querySelectorAll('.event').forEach(el => {
+                                el.classList.remove('event-being-dragged');
+                            });
+                            
+                            // Limpiar referencia
+                            window.draggedElement = null;
+                        });
+                        
+                        // Prevenir que el drag interfiera con el click
+                        eventElement.addEventListener('mousedown', function(e) {
+                            e.stopPropagation();
+                        });
+                    }
+                    
                     // Añadir evento click para seleccionar el evento
                     eventElement.addEventListener('click', function(e) {
                         e.stopPropagation();
                         selectedEvent = event;
+                        selectedDate = date;
                         updateSidePanel();
                     });
                     
@@ -1272,6 +2009,127 @@
             });
             
             document.getElementById('calendar').appendChild(dayCell);
+        }
+        
+        // Función para mover un evento de una fecha a otra
+        function moveEventToDate(eventId, originalDateStr, newDateStr) {
+            // Si la fecha original y nueva son iguales, no hacer nada
+            if (originalDateStr === newDateStr) {
+                return;
+            }
+            
+            // Buscar el evento en la fecha original
+            if (events[originalDateStr]) {
+                const eventIndex = events[originalDateStr].findIndex(event => event.id === eventId);
+                
+                if (eventIndex !== -1) {
+                    // Guardar una referencia al evento
+                    const eventToMove = events[originalDateStr][eventIndex];
+                    
+                    // Eliminar el evento de la fecha original
+                    events[originalDateStr].splice(eventIndex, 1);
+                    
+                    // Si no quedan eventos en esa fecha, eliminar la clave
+                    if (events[originalDateStr].length === 0) {
+                        delete events[originalDateStr];
+                    }
+                    
+                    // Asegurarse de que exista un array para la nueva fecha
+                    if (!events[newDateStr]) {
+                        events[newDateStr] = [];
+                    }
+                    
+                    // Añadir el evento a la nueva fecha
+                    events[newDateStr].push(eventToMove);
+                    
+                    // Si el evento es una cita médica, actualizar la fecha de inicio y fin
+                    if (eventToMove.appointmentData) {
+                        const newDate = new Date(newDateStr);
+                        
+                        // Obtener las horas y minutos de las fechas originales
+                        const startDate = new Date(eventToMove.appointmentData.startTime);
+                        const endDate = new Date(eventToMove.appointmentData.endTime);
+                        
+                        // Crear nuevas fechas con la nueva fecha pero manteniendo la hora
+                        const newStartDate = new Date(newDate);
+                        newStartDate.setHours(startDate.getHours(), startDate.getMinutes());
+                        
+                        const newEndDate = new Date(newDate);
+                        newEndDate.setHours(endDate.getHours(), endDate.getMinutes());
+                        
+                        // Actualizar las fechas en appointmentData
+                        eventToMove.appointmentData.startTime = newStartDate.toISOString();
+                        eventToMove.appointmentData.endTime = newEndDate.toISOString();
+                        
+                        // Actualizar extendedProps si existe
+                        if (eventToMove.extendedProps) {
+                            try {
+                                const extendedProps = JSON.parse(eventToMove.extendedProps);
+                                extendedProps.startTime = newStartDate.toISOString();
+                                extendedProps.endTime = newEndDate.toISOString();
+                                eventToMove.extendedProps = JSON.stringify(extendedProps);
+                            } catch (e) {
+                                console.error('Error al actualizar extendedProps:', e);
+                            }
+                        }
+                        
+                        // Actualizar la hora mostrada en el evento
+                        eventToMove.time = newStartDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    
+                    // Guardar cambios en localStorage
+                    localStorage.setItem('calendarEvents', JSON.stringify(events));
+                    
+                    // Mostrar mensaje de confirmación
+                    console.log(`Evento movido de ${originalDateStr} a ${newDateStr}`);
+                }
+            }
+        }
+        
+        // Función para mostrar confirmación visual cuando se suelta un evento
+        function showDropConfirmation(dayCell) {
+            // Crear elemento de confirmación
+            const confirmation = document.createElement('div');
+            confirmation.style.cssText = `
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #4caf50;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 4px;
+                font-size: 12px;
+                z-index: 1000;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            confirmation.textContent = '✓ Movido';
+            
+            // Añadir al dayCell
+            dayCell.style.position = 'relative';
+            dayCell.appendChild(confirmation);
+            
+            // Mostrar con animación
+            setTimeout(() => {
+                confirmation.style.opacity = '1';
+            }, 10);
+            
+            // Ocultar y eliminar después de 1 segundo
+            setTimeout(() => {
+                confirmation.style.opacity = '0';
+                setTimeout(() => {
+                    if (confirmation.parentNode) {
+                        confirmation.parentNode.removeChild(confirmation);
+                    }
+                }, 300);
+            }, 1000);
+        }
+        
+        // Función para verificar si un evento es arrastrable
+        function isEventDraggable(event) {
+            return event.editable !== false && event.startEditable !== false;
         }
         
         // Función para formatear fecha
@@ -1309,16 +2167,30 @@
             const dateStr = formatDate(date);
             if (events[dateStr]) {
                 events[dateStr].forEach(event => {
-                    // Verificar si el evento coincide con esta hora
                     if (event.time) {
                         const eventHour = parseInt(event.time.split(':')[0]);
                         if (eventHour === hour) {
                             const eventElement = document.createElement('div');
                             eventElement.classList.add('week-event');
                             eventElement.textContent = event.title;
-                            eventElement.style.backgroundColor = event.backgroundColor;
-                            eventElement.style.color = event.textColor;
-                            eventElement.setAttribute('data-event-id', event.id);
+                            eventElement.style.backgroundColor = event.backgroundColor || getColorForCode(event.color);
+                            eventElement.style.color = event.textColor || '#FFFFFF';
+                            
+                            // Hacer el evento arrastrable si es editable
+                            if (event.editable !== false) {
+                                eventElement.setAttribute('draggable', 'true');
+                                eventElement.setAttribute('data-event-id', event.id);
+                                
+                                eventElement.addEventListener('dragstart', function(e) {
+                                    e.dataTransfer.setData('text/plain', event.id);
+                                    e.dataTransfer.setData('originalDate', dateStr);
+                                    eventElement.classList.add('dragging');
+                                });
+                                
+                                eventElement.addEventListener('dragend', function() {
+                                    eventElement.classList.remove('dragging');
+                                });
+                            }
                             
                             eventElement.addEventListener('click', function(e) {
                                 e.stopPropagation();
@@ -1332,12 +2204,6 @@
                     }
                 });
             }
-            
-            // Añadir funcionalidad de doble click para crear eventos
-            timeSlot.addEventListener('dblclick', function() {
-                selectedDate = new Date(date);
-                showEventForm();
-            });
         }
         
         // Función para añadir eventos "all-day"
@@ -1345,14 +2211,28 @@
             const dateStr = formatDate(date);
             if (events[dateStr]) {
                 events[dateStr].forEach(event => {
-                    // Solo mostrar eventos sin hora específica
-                    if (!event.time) {
+                    if (!event.time || event.time === '') {
                         const eventElement = document.createElement('div');
                         eventElement.classList.add('week-event');
                         eventElement.textContent = event.title;
-                        eventElement.style.backgroundColor = event.backgroundColor;
-                        eventElement.style.color = event.textColor;
-                        eventElement.setAttribute('data-event-id', event.id);
+                        eventElement.style.backgroundColor = event.backgroundColor || getColorForCode(event.color);
+                        eventElement.style.color = event.textColor || '#FFFFFF';
+                        
+                        // Hacer el evento arrastrable si es editable
+                        if (event.editable !== false) {
+                            eventElement.setAttribute('draggable', 'true');
+                            eventElement.setAttribute('data-event-id', event.id);
+                            
+                            eventElement.addEventListener('dragstart', function(e) {
+                                e.dataTransfer.setData('text/plain', event.id);
+                                e.dataTransfer.setData('originalDate', dateStr);
+                                eventElement.classList.add('dragging');
+                            });
+                            
+                            eventElement.addEventListener('dragend', function() {
+                                eventElement.classList.remove('dragging');
+                            });
+                        }
                         
                         eventElement.addEventListener('click', function(e) {
                             e.stopPropagation();
@@ -1365,53 +2245,50 @@
                     }
                 });
             }
-            
-            // Añadir funcionalidad de doble click para crear eventos
-            timeSlot.addEventListener('dblclick', function() {
-                selectedDate = new Date(date);
-                showEventForm();
-            });
         }
         
         // Función para mostrar el formulario de eventos
         function showEventForm() {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('event-form').style.display = 'block';
+            const overlay = document.getElementById('overlay');
+            const eventForm = document.getElementById('event-form');
             
-            // Limpiar el formulario
-            document.getElementById('new-event-title').value = '';
-            document.getElementById('new-event-time').value = '';
-            document.getElementById('new-start-editable').checked = false;
-            document.getElementById('new-duration-editable').checked = false;
-            document.getElementById('new-event-display').value = '';
-            document.getElementById('new-event-extended-props').value = '';
-            document.getElementById('new-event-background-color').value = '';
-            document.getElementById('new-event-text-color').value = '';
+            if (overlay) overlay.style.display = 'block';
+            if (eventForm) eventForm.style.display = 'block';
+            
+            // Limpiar el formulario si existen los elementos
+            const titleInput = document.getElementById('new-event-title');
+            const timeInput = document.getElementById('new-event-time');
+            
+            if (titleInput) titleInput.value = '';
+            if (timeInput) timeInput.value = '';
             
             // Restablecer color seleccionado
             document.querySelectorAll('.color-option').forEach(opt => {
                 opt.classList.remove('selected');
             });
-            document.querySelector('.color-option[data-color="1"]').classList.add('selected');
+            const firstColor = document.querySelector('.color-option[data-color="1"]');
+            if (firstColor) {
+                firstColor.classList.add('selected');
+            }
             selectedColorOption = '1';
         }
         
         // Función para cerrar el formulario de eventos
         function closeEventForm() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('event-form').style.display = 'none';
+            const overlay = document.getElementById('overlay');
+            const eventForm = document.getElementById('event-form');
+            
+            if (overlay) overlay.style.display = 'none';
+            if (eventForm) eventForm.style.display = 'none';
         }
         
         // Función para guardar evento
         function saveEvent() {
-            const title = document.getElementById('new-event-title').value;
-            const time = document.getElementById('new-event-time').value;
-            const startEditable = document.getElementById('new-start-editable').checked;
-            const durationEditable = document.getElementById('new-duration-editable').checked;
-            const display = document.getElementById('new-event-display').value;
-            const extendedProps = document.getElementById('new-event-extended-props').value;
-            const backgroundColor = document.getElementById('new-event-background-color').value;
-            const textColor = document.getElementById('new-event-text-color').value;
+            const titleInput = document.getElementById('new-event-title');
+            const timeInput = document.getElementById('new-event-time');
+            
+            const title = titleInput ? titleInput.value : '';
+            const time = timeInput ? timeInput.value : '';
             
             if (!title.trim()) {
                 alert('Por favor, ingrese un título para el evento');
@@ -1429,12 +2306,12 @@
                 title: title,
                 time: time,
                 color: selectedColorOption,
-                backgroundColor: backgroundColor || getColorForCode(selectedColorOption),
-                textColor: textColor || '#FFFFFF',
-                startEditable: startEditable,
-                durationEditable: durationEditable,
-                display: display,
-                extendedProps: extendedProps,
+                backgroundColor: getColorForCode(selectedColorOption),
+                textColor: '#FFFFFF',
+                startEditable: true,
+                durationEditable: true,
+                display: '',
+                extendedProps: '',
                 editable: true
             };
             
@@ -1450,153 +2327,343 @@
         
         // Función para actualizar el panel lateral
         function updateSidePanel() {
-            // Actualizar fecha seleccionada
-            const options = { day: 'numeric', month: 'short', year: 'numeric' };
-            const formattedDate = selectedDate.toLocaleDateString('en-US', options);
-            document.getElementById('selected-date').textContent = formattedDate;
-            
-            // Actualizar detalles del evento seleccionado
-            if (selectedEvent) {
-                document.getElementById('event-id').value = selectedEvent.id;
-                document.getElementById('event-start').value = formatDate(selectedDate);
-                document.getElementById('event-end').value = formatDate(selectedDate);
-                document.getElementById('event-display').value = selectedEvent.display || '';
-                document.getElementById('event-extended-props').value = selectedEvent.extendedProps || '';
-                document.getElementById('event-background-color').value = selectedEvent.backgroundColor || '';
-                document.getElementById('event-text-color').value = selectedEvent.textColor || '';
-                document.getElementById('event-title').value = selectedEvent.title || '';
-                document.getElementById('event-title-html').value = selectedEvent.title || '';
-                
-                // Actualizar toggles
-                document.getElementById('all-toggle').checked = selectedEvent.allDay || false;
-                document.getElementById('day-toggle').checked = selectedEvent.dayEvent || false;
-                document.getElementById('start-editable-toggle').checked = selectedEvent.startEditable || false;
-                document.getElementById('duration-editable-toggle').checked = selectedEvent.durationEditable || false;
-                document.getElementById('editable-toggle').checked = selectedEvent.editable || false;
-                
-                // Actualizar Resource Ids - seleccionar colores basados en el color del evento
-                const resourceSelect = document.getElementById('resource-ids');
-                Array.from(resourceSelect.options).forEach(option => {
-                    option.selected = false;
-                });
-                // Seleccionar el color correspondiente al evento
-                if (selectedEvent.color) {
-                    const colorOption = resourceSelect.querySelector(`option[value="color-${selectedEvent.color}"]`);
-                    if (colorOption) {
-                        colorOption.selected = true;
-                    }
-                }
-            } else {
-                // Limpiar campos si no hay evento seleccionado
-                document.getElementById('event-id').value = nextEventId;
-                document.getElementById('event-start').value = formatDate(selectedDate);
-                document.getElementById('event-end').value = formatDate(selectedDate);
-                document.getElementById('event-display').value = '';
-                document.getElementById('event-extended-props').value = '';
-                document.getElementById('event-background-color').value = '';
-                document.getElementById('event-text-color').value = '';
-                document.getElementById('event-title').value = '';
-                document.getElementById('event-title-html').value = '';
-                
-                // Limpiar toggles
-                document.getElementById('all-toggle').checked = false;
-                document.getElementById('day-toggle').checked = false;
-                document.getElementById('start-editable-toggle').checked = false;
-                document.getElementById('duration-editable-toggle').checked = false;
-                document.getElementById('editable-toggle').checked = false;
-                
-                // Limpiar Resource Ids
-                const resourceSelect = document.getElementById('resource-ids');
-                Array.from(resourceSelect.options).forEach(option => {
-                    option.selected = false;
-                });
-            }
+            // Esta función actualiza el panel lateral con información del día/evento seleccionado
+            console.log('Panel lateral actualizado');
         }
         
         // Función para actualizar evento existente
         function updateEvent() {
-            const newId = parseInt(document.getElementById('event-id').value);
-            const title = document.getElementById('event-title').value;
-            const display = document.getElementById('event-display').value;
-            const extendedProps = document.getElementById('event-extended-props').value;
-            const backgroundColor = document.getElementById('event-background-color').value;
-            const textColor = document.getElementById('event-text-color').value;
-            const allDay = document.getElementById('all-toggle').checked;
-            const dayEvent = document.getElementById('day-toggle').checked;
-            const startEditable = document.getElementById('start-editable-toggle').checked;
-            const durationEditable = document.getElementById('duration-editable-toggle').checked;
-            const editable = document.getElementById('editable-toggle').checked;
+            console.log('Actualizando evento existente');
+        }
+        
+        // Función para resetear el formulario de evento
+        function resetEventForm() {
+            console.log('Reseteando formulario de evento');
+        }
+
+        // Funcionalidad para el formulario de citas médicas
+        function initializeMedicalAppointmentForm() {
+            // Elementos del formulario
+            const searchPatientInput = document.getElementById('search-patient');
+            const patientNameInput = document.getElementById('patient-name');
+            const patientLastname1Input = document.getElementById('patient-lastname1');
+            const patientLastname2Input = document.getElementById('patient-lastname2');
+            const patientAddressInput = document.getElementById('patient-address');
+            const patientPhoneInput = document.getElementById('patient-phone');
+            const patientPhone2Input = document.getElementById('patient-phone2');
+            const patientInsuranceSelect = document.getElementById('patient-insurance');
+            const patientEmailInput = document.getElementById('patient-email');
+            const treatmentSearchInput = document.getElementById('treatment-search');
+            const treatmentNotesTextarea = document.getElementById('treatment-notes');
+            const startTimeInput = document.getElementById('start-time');
+            const endTimeInput = document.getElementById('end-time');
+            const addTreatmentBtn = document.querySelector('.btn-add-treatment');
+            const doctorTags = document.querySelectorAll('.doctor-tag');
+            const saveAppointmentBtn = document.getElementById('save-appointment');
+            const cancelAppointmentBtn = document.getElementById('cancel-appointment');
+            const historialBtn = document.querySelector('.btn-historial');
+            const modificarBtn = document.querySelector('.btn-modificar');
             
-            // Obtener Resource Ids seleccionados
-            const resourceSelect = document.getElementById('resource-ids');
-            const selectedResources = Array.from(resourceSelect.selectedOptions).map(option => option.value);
+            // Variables para el estado del formulario
+            let selectedDoctor = 'Julieta Luna';
+            let patientData = {
+                name: '',
+                lastname1: '',
+                lastname2: '',
+                address: '',
+                phone: '',
+                phone2: '',
+                insurance: '',
+                email: ''
+            };
             
-            if (!title.trim()) {
-                alert('Por favor, ingrese un título para el evento');
-                return;
+            // Solo continuar si los elementos existen
+            if (!saveAppointmentBtn) return;
+            
+            // Búsqueda de paciente
+            if (searchPatientInput) {
+                searchPatientInput.addEventListener('input', function() {
+                    const searchTerm = this.value.trim().toLowerCase();
+                    
+                    // Simulación de búsqueda de paciente
+                    if (searchTerm.length > 2) {
+                        console.log('Buscando paciente:', searchTerm);
+                        
+                        // Ejemplo de autocompletado
+                        if (searchTerm.includes('victor')) {
+                            fillPatientData({
+                                name: 'VICTOR MANUEL',
+                                lastname1: 'LUNA',
+                                lastname2: 'RAMOS',
+                                address: 'Av. Principal 123',
+                                phone: '555-1234',
+                                phone2: '555-5678',
+                                insurance: 'seguro1',
+                                email: 'victor.luna@email.com'
+                            });
+                        }
+                    }
+                });
             }
             
-            if (selectedEvent) {
-                // Actualizar evento existente
-                selectedEvent.id = newId || selectedEvent.id;
-                selectedEvent.title = title;
-                selectedEvent.display = display;
-                selectedEvent.extendedProps = extendedProps;
-                selectedEvent.backgroundColor = backgroundColor;
-                selectedEvent.textColor = textColor;
-                selectedEvent.allDay = allDay;
-                selectedEvent.dayEvent = dayEvent;
-                selectedEvent.startEditable = startEditable;
-                selectedEvent.durationEditable = durationEditable;
-                selectedEvent.editable = editable;
-                selectedEvent.resourceIds = selectedResources;
+            // Función para llenar los datos del paciente
+            function fillPatientData(data) {
+                patientData = data;
+                if (patientNameInput) patientNameInput.value = data.name;
+                if (patientLastname1Input) patientLastname1Input.value = data.lastname1;
+                if (patientLastname2Input) patientLastname2Input.value = data.lastname2;
+                if (patientAddressInput) patientAddressInput.value = data.address;
+                if (patientPhoneInput) patientPhoneInput.value = data.phone;
+                if (patientPhone2Input) patientPhone2Input.value = data.phone2;
+                if (patientInsuranceSelect) patientInsuranceSelect.value = data.insurance;
+                if (patientEmailInput) patientEmailInput.value = data.email;
+            }
+            
+            // Agregar tratamiento
+            if (addTreatmentBtn && treatmentSearchInput && treatmentNotesTextarea) {
+                addTreatmentBtn.addEventListener('click', function() {
+                    const treatmentText = treatmentSearchInput.value.trim();
+                    if (treatmentText) {
+                        const currentNotes = treatmentNotesTextarea.value;
+                        const newNote = currentNotes ? `${currentNotes}\n- ${treatmentText}` : `- ${treatmentText}`;
+                        treatmentNotesTextarea.value = newNote;
+                        treatmentSearchInput.value = '';
+                    }
+                });
+            }
+            
+            // Selección de médico
+            doctorTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    doctorTags.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedDoctor = this.textContent.trim();
+                    console.log('Médico seleccionado:', selectedDoctor);
+                });
+            });
+            
+            // Botón historial
+            if (historialBtn) {
+                historialBtn.addEventListener('click', function() {
+                    alert('Mostrando historial del paciente...');
+                    console.log('Abrir historial del paciente');
+                });
+            }
+            
+            // Botón modificar datos
+            if (modificarBtn) {
+                modificarBtn.addEventListener('click', function() {
+                    const inputs = document.querySelectorAll('.patient-data-section input, .patient-data-section select');
+                    inputs.forEach(input => {
+                        input.disabled = false;
+                        input.style.backgroundColor = '#ffffff';
+                    });
+                    alert('Campos habilitados para edición');
+                });
+            }
+            
+            // Validación de campos obligatorios
+            function validateForm() {
+                const requiredFields = [
+                    { field: patientNameInput, name: 'Nombre' },
+                    { field: patientLastname1Input, name: 'Apellido paterno' },
+                    { field: patientLastname2Input, name: 'Apellido materno' },
+                    { field: patientPhoneInput, name: 'Teléfono' },
+                    { field: patientEmailInput, name: 'Correo electrónico' }
+                ];
                 
-                // Actualizar el color basado en el primer Resource Id seleccionado
-                if (selectedResources.length > 0) {
-                    const colorNumber = selectedResources[0].replace('color-', '');
-                    selectedEvent.color = colorNumber;
-                    selectedEvent.backgroundColor = getColorForCode(colorNumber);
+                const errors = [];
+                
+                requiredFields.forEach(({ field, name }) => {
+                    if (field && !field.value.trim()) {
+                        errors.push(name);
+                        field.style.borderColor = '#f44336';
+                    } else if (field) {
+                        field.style.borderColor = '#ddd';
+                    }
+                });
+                
+                // Validar formato de email
+                if (patientEmailInput) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (patientEmailInput.value.trim() && !emailRegex.test(patientEmailInput.value.trim())) {
+                        errors.push('Formato de correo electrónico inválido');
+                        patientEmailInput.style.borderColor = '#f44336';
+                    }
                 }
-            } else {
-                // Crear nuevo evento
-                const dateStr = formatDate(selectedDate);
+                
+                return errors;
+            }
+            
+            // Guardar cita
+            saveAppointmentBtn.addEventListener('click', function() {
+                const errors = validateForm();
+                
+                if (errors.length > 0) {
+                    alert('Por favor, complete los siguientes campos obligatorios:\n- ' + errors.join('\n- '));
+                    return;
+                }
+                
+                const appointmentData = {
+                    patient: {
+                        name: patientNameInput ? patientNameInput.value.trim() : '',
+                        lastname1: patientLastname1Input ? patientLastname1Input.value.trim() : '',
+                        lastname2: patientLastname2Input ? patientLastname2Input.value.trim() : '',
+                        address: patientAddressInput ? patientAddressInput.value.trim() : '',
+                        phone: patientPhoneInput ? patientPhoneInput.value.trim() : '',
+                        phone2: patientPhone2Input ? patientPhone2Input.value.trim() : '',
+                        insurance: patientInsuranceSelect ? patientInsuranceSelect.value : '',
+                        email: patientEmailInput ? patientEmailInput.value.trim() : ''
+                    },
+                    treatment: treatmentNotesTextarea ? treatmentNotesTextarea.value.trim() : '',
+                    startTime: startTimeInput ? startTimeInput.value : '',
+                    endTime: endTimeInput ? endTimeInput.value : '',
+                    doctor: selectedDoctor,
+                    timestamp: new Date().toISOString()
+                };
+                
+                console.log('Datos de la cita:', appointmentData);
+                
+                // Crear evento en el calendario
+                const startDate = new Date(appointmentData.startTime);
+                const endDate = new Date(appointmentData.endTime);
+                const dateStr = formatDate(startDate);
                 
                 if (!events[dateStr]) {
                     events[dateStr] = [];
                 }
                 
-                const newEvent = {
-                    id: newId || nextEventId++,
-                    title: title,
-                    time: '',
-                    color: selectedResources.length > 0 ? selectedResources[0].replace('color-', '') : '1',
-                    backgroundColor: backgroundColor || (selectedResources.length > 0 ? getColorForCode(selectedResources[0].replace('color-', '')) : getColorForCode('1')),
-                    textColor: textColor || '#FFFFFF',
-                    allDay: allDay,
-                    dayEvent: dayEvent,
-                    startEditable: startEditable,
-                    durationEditable: durationEditable,
-                    display: display,
-                    extendedProps: extendedProps,
-                    editable: editable,
-                    resourceIds: selectedResources
+                const newAppointment = {
+                    id: nextEventId++,
+                    title: `${appointmentData.patient.name} ${appointmentData.patient.lastname1} - ${appointmentData.doctor}`,
+                    time: startDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+                    color: '2',
+                    backgroundColor: '#2196F3',
+                    textColor: '#FFFFFF',
+                    startEditable: true,
+                    durationEditable: true,
+                    display: '',
+                    extendedProps: JSON.stringify(appointmentData),
+                    editable: true,
+                    appointmentData: appointmentData
                 };
                 
-                events[dateStr].push(newEvent);
-                selectedEvent = newEvent;
+                events[dateStr].push(newAppointment);
+                
+                // Guardar en localStorage
+                localStorage.setItem('calendarEvents', JSON.stringify(events));
+                
+                // Actualizar calendario
+                renderCalendar();
+                
+                // Enviar datos al backend
+                sendAppointmentToBackend(appointmentData);
+                
+                // Mostrar confirmación
+                alert('Cita agendada exitosamente');
+                
+                // Limpiar formulario
+                resetAppointmentForm();
+            });
+            
+            // Función para enviar cita al backend
+            function sendAppointmentToBackend(appointmentData) {
+                // Simulación de envío AJAX
+                fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(appointmentData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Cita guardada en el backend:', data);
+                })
+                .catch(error => {
+                    console.error('Error al guardar la cita:', error);
+                });
             }
             
-            // Guardar en localStorage
-            localStorage.setItem('calendarEvents', JSON.stringify(events));
+            // Cancelar/Cerrar
+            if (cancelAppointmentBtn) {
+                cancelAppointmentBtn.addEventListener('click', function() {
+                    if (confirm('¿Está seguro de que desea cerrar sin guardar?')) {
+                        resetAppointmentForm();
+                    }
+                });
+            }
             
-            renderCalendar();
-            updateSidePanel();
-        }
-        
-        // Función para resetear el formulario de evento
-        function resetEventForm() {
-            if (selectedEvent) {
-                updateSidePanel();
+            // Función para resetear el formulario de cita
+            function resetAppointmentForm() {
+                // Limpiar campos del paciente
+                if (searchPatientInput) searchPatientInput.value = '';
+                if (patientNameInput) patientNameInput.value = '';
+                if (patientLastname1Input) patientLastname1Input.value = '';
+                if (patientLastname2Input) patientLastname2Input.value = '';
+                if (patientAddressInput) patientAddressInput.value = '';
+                if (patientPhoneInput) patientPhoneInput.value = '';
+                if (patientPhone2Input) patientPhone2Input.value = '';
+                if (patientInsuranceSelect) patientInsuranceSelect.value = '';
+                if (patientEmailInput) patientEmailInput.value = '';
+                if (treatmentSearchInput) treatmentSearchInput.value = 'REVISION';
+                if (treatmentNotesTextarea) treatmentNotesTextarea.value = '';
+                
+                // Resetear selección de médico
+                doctorTags.forEach(tag => tag.classList.remove('active'));
+                if (doctorTags.length > 0) {
+                    doctorTags[0].classList.add('active');
+                    selectedDoctor = 'Julieta Luna';
+                }
+                
+                // Resetear fechas
+                if (startTimeInput && endTimeInput) {
+                    const now = new Date();
+                    const startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0);
+                    const endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 30);
+                    
+                    startTimeInput.value = startTime.toISOString().slice(0, 16);
+                    endTimeInput.value = endTime.toISOString().slice(0, 16);
+                }
+                
+                // Resetear estilos de validación
+                document.querySelectorAll('.patient-data-section input, .patient-data-section select').forEach(field => {
+                    field.style.borderColor = '#ddd';
+                });
+                
+                patientData = {
+                    name: '',
+                    lastname1: '',
+                    lastname2: '',
+                    address: '',
+                    phone: '',
+                    phone2: '',
+                    insurance: '',
+                    email: ''
+                };
+            }
+            
+            // Autocompletar tratamientos
+            if (treatmentSearchInput) {
+                treatmentSearchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    
+                    // Lista de tratamientos comunes
+                    const commonTreatments = [
+                        'REVISION',
+                        'LIMPIEZA DENTAL',
+                        'EXTRACCIÓN',
+                        'ENDODONCIA',
+                        'ORTODONCIA',
+                        'BLANQUEAMIENTO',
+                        'IMPLANTE',
+                        'PRÓTESIS',
+                        'CIRUGÍA ORAL',
+                        'PERIODONCIA'
+                    ];
+                    
+                    console.log('Buscando tratamientos para:', searchTerm);
+                });
             }
         }
     </script>
